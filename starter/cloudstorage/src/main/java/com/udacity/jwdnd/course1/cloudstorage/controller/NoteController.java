@@ -16,35 +16,37 @@ import org.springframework.web.bind.annotation.*;
 public class NoteController {
     private @Autowired NoteService noteService;
 
-    @GetMapping("")
-    public String getAll(Model model){
-        model.addAttribute("notes", noteService.getAll());
-        return "home";
+    @GetMapping()
+    public String getUserNotes(Authentication authentication, Model model){
+        User currentUser = (User) authentication.getPrincipal();
+        model.addAttribute("notes", noteService.getUserNotes(currentUser.getUserId()));
+        return "redirect:/";
     }
 
-    @GetMapping("/{id}")
-    public String getOne(@PathVariable("id") int id, Model model){
-        model.addAttribute("notes", noteService.getOne(id));
-        return "home";
-    }
 
     @PostMapping("")
     public String create(Authentication authentication, @ModelAttribute Note note, Model model){
         User currentUser = (User) authentication.getPrincipal();
         note.setUserId(currentUser.getUserId());
         noteService.create(note);
-        model.addAttribute("notes", noteService.getAll());
-        return "home";
+        model.addAttribute("notes", noteService.getUserNotes(currentUser.getUserId()));
+        return "redirect:/";
     }
 
-    @PutMapping("/{id}")
-    public String update(@PathVariable("id") int id, Model model){
-        return "home";
+    @PutMapping("")
+    public String update(Authentication authentication, Note note,Model model){
+
+        noteService.update(note);
+
+        User currentUser = (User) authentication.getPrincipal();
+        model.addAttribute("notes", noteService.getUserNotes(currentUser.getUserId()));
+        return "redirect:/";
     }
 
-    @PostMapping("/{id}")
-    public String deleteNote(@PathVariable("id") int id, Model model){
-        noteService.delete(id);
-        return "home";
+    @GetMapping("delete-note")
+    public String deleteNote(@RequestParam("noteId") int noteId){
+
+        noteService.delete(noteId);
+        return "redirect:/";
     }
 }

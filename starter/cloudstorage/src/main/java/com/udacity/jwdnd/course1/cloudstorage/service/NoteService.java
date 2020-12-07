@@ -16,10 +16,6 @@ public class NoteService {
         this.noteMapper = noteMapper;
     }
 
-    public List<Note> getAll() {
-        return noteMapper.findAll();
-    }
-
     public Note getOne(int id) {
         return  noteMapper.find(id);
     }
@@ -28,7 +24,15 @@ public class NoteService {
         return noteMapper.create(note);
     }
 
+    public void update(Note note){
+        noteMapper.update(note);
+    }
+
     public void delete(int id) {
         noteMapper.deleteNote(id);
+    }
+
+    public List<Note> getUserNotes(int userId) {
+        return noteMapper.findByUser(userId);
     }
 }

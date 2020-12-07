@@ -19,14 +19,14 @@ public interface NoteMapper {
     @Options(useGeneratedKeys = true, keyProperty = "noteId")
     int create(Note note);
 
-    @Update("UPDATE NOTES SET noteId = #{noteId}, userName = #{userName}, " +
-            "salt = #{salt}, password = #{password}, firstName = #{firstName}, " +
-            "lastName = #{lastName}")
+    @Update("UPDATE NOTES SET noteTitle = #{noteTitle}, " +
+            "noteDescription = #{noteDescription} " +
+            "WHERE noteId = #{note.noteId} ")
     void update(Note note);
 
     @Delete("DELETE FROM NOTES WHERE noteId = #{id}")
     void deleteNote(int id);
 
-    @Select("SELECT * FROM NOTES")
-    List<Note> findAll();
+    @Select("SELECT * FROM NOTES WHERE userId = #{userId}")
+    List<Note> findByUser(int userId);
 }

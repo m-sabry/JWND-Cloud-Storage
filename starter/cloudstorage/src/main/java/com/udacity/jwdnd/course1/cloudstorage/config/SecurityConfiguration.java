@@ -10,10 +10,13 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     public void configure(HttpSecurity http) throws Exception{
+        http.authorizeRequests().antMatchers("/h2-console/**").permitAll()
+                .and().csrf().ignoringAntMatchers("/h2-console/**")
+                .and().headers().frameOptions().sameOrigin();
+
         http.csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/", "/home", "/static/**",
-                        "/css/**", "/js/**").permitAll()
+                .antMatchers("/static/**", "/css/**", "/js/**", "/signup").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()

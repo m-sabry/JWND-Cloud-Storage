@@ -8,6 +8,16 @@ public class User {
     private String firstName;
     private String lastName;
 
+    public User() {}
+
+    public User(User user) {
+        this.userName = user.getUserName();
+        this.firstName = user.getFirstName();
+        this.lastName = user.lastName;
+        this.password = user.getPassword();
+        this.salt = user.salt;
+    }
+
     public int getUserId() {
         return userId;
     }

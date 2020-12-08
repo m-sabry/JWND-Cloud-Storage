@@ -80,7 +80,7 @@
                                     <tr th:each="note : ${notes}">
                                         <td>
                                             <button type="button" class="btn btn-success"
-                                                    th:onclick="'javascript:showNoteModal(\'' + [[${note.noteId}]] + , \''+[[${note.noteTitle}]]+ \'',\''[[${note.noteDescription}]]\'');'">Edit</button>
+                                                    th:onclick="showNoteModal([[${note.noteId}]],[[${note.noteTitle}]],[[${note.noteDescription}]]);">Edit</button>
                                             <a th:href="@{notes/delete-note(noteId=${note.getNoteId()})}" class="btn btn-danger">Delete</a>
                                         </td>
                                         <th scope="row"><span th:text="${note.getNoteTitle()}"></span></th>
@@ -102,7 +102,7 @@
                                     </div>
                                     <div class="modal-body">
                                         <form action="#" th:action="@{notes}" th:object="${note}" method="POST">
-                                            <input type="hidden" name="noteId" id="note-id">
+                                            <input type="hidden" th:field="*{noteId}" id="note-id">
                                             <div class="form-group">
                                                 <label for="note-title" class="col-form-label">Title</label>
                                                 <input type="text" th:field="*{noteTitle}" name="noteTitle" class="form-control" id="note-title" maxlength="20" required>

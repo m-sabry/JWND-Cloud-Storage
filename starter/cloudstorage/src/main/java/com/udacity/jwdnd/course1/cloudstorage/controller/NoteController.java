@@ -28,20 +28,23 @@ public class NoteController {
     public String create(Authentication authentication, @ModelAttribute Note note, Model model){
         User currentUser = (User) authentication.getPrincipal();
         note.setUserId(currentUser.getUserId());
-        noteService.create(note);
+
+        if(note.getNoteId() != null ) noteService.update(note);
+        else noteService.create(note);
+
         model.addAttribute("notes", noteService.getUserNotes(currentUser.getUserId()));
         return "redirect:/";
     }
-
-    @PutMapping("")
-    public String update(Authentication authentication, Note note,Model model){
-
-        noteService.update(note);
-
-        User currentUser = (User) authentication.getPrincipal();
-        model.addAttribute("notes", noteService.getUserNotes(currentUser.getUserId()));
-        return "redirect:/";
-    }
+//
+//    @PutMapping("")
+//    public String update(Authentication authentication, Note note,Model model){
+//
+//        noteService.update(note);
+//
+//        User currentUser = (User) authentication.getPrincipal();
+//        model.addAttribute("notes", noteService.getUserNotes(currentUser.getUserId()));
+//        return "redirect:/";
+//    }
 
     @GetMapping("delete-note")
     public String deleteNote(@RequestParam("noteId") int noteId){

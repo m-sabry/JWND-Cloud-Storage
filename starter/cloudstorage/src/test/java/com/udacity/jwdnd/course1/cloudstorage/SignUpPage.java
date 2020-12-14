@@ -34,4 +34,43 @@ public class SignUpPage {
         signUpButton.click();
     }
 
+    public WebElement getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(WebElement firstName) {
+        this.firstName = firstName;
+    }
+
+    public WebElement getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(WebElement lastName) {
+        this.lastName = lastName;
+    }
+
+    public WebElement getUsername() {
+        return username;
+    }
+
+    public void setUsername(WebElement username) {
+        this.username = username;
+    }
+
+    public WebElement getPassword() {
+        return password;
+    }
+
+    public void setPassword(WebElement password) {
+        this.password = password;
+    }
+
+    public WebElement getSignUpButton() {
+        return signUpButton;
+    }
+
+    public void setSignUpButton(WebElement signUpButton) {
+        this.signUpButton = signUpButton;
+    }
 }

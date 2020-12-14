@@ -3,6 +3,7 @@ package com.udacity.jwdnd.course1.cloudstorage;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.jupiter.api.*;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
@@ -12,8 +13,11 @@ class CloudStorageApplicationTests {
 
 	@LocalServerPort
 	private int port;
-
 	private WebDriver driver;
+
+	private LoginPage loginPage;
+	private HomePage homePage;
+	private SignUpPage signUpPage;
 
 	@BeforeAll
 	static void beforeAll() {
@@ -39,38 +43,61 @@ class CloudStorageApplicationTests {
 
 	@Test
 	public void authorization() {
+		loginPage = new LoginPage(driver);
+
 		driver.get("http://localhost:" + this.port + "/login");
-		Assertions.assertEquals("Login", driver.getTitle());
+
+		loginPage.getUsername().sendKeys("msabry");
+		loginPage.getPassword().sendKeys("111111");
+		loginPage.getLoginSubmit().submit();
+
+		Assertions.assertEquals("http://localhost:" + port + "/", driver.getCurrentUrl());
 	}
 
 	@Test
 	public void unAuthorizedUser() throws InterruptedException{
-		// TODO Write a test that verifies that an unauthorized user can only access the login and signup pages.
-		driver = new ChromeDriver();
+		// _TODO Write a test that verifies that an unauthorized user can only access the login and signup pages.
 
-		// visit home redirect to login page
-		driver.get("http://localhost:8080");
-		Thread.sleep(10000);
-
-		// visiting signup page
-		driver.get("http://localhost:8080/signup");
-		Thread.sleep(10000);
-
-//        driver.quit();
+		driver.get("http://localhost:" + this.port);
+		Assertions.assertEquals("http://localhost:" + port + "/login", driver.getCurrentUrl());
 	}
 
 	// TODO Write a test that signs up a new user, logs in, verifies that the home page is accessible,
 	//  logs out, and verifies that the home page is no longer accessible.
+	@Test
 	public void fullCycleTest(){
+
+		String username = "mostafa";
+		String password = "password";
+
 		//Signup
+		driver.get("http://localhost:" + this.port + "/signup");
+		signUpPage = new SignUpPage(driver);
+		signUpPage.getUsername().sendKeys(username);
+		signUpPage.getPassword().sendKeys(password);
+		signUpPage.signup();
+
+//		Assertions.assertEquals("http://localhost:" + port + "/", driver.getCurrentUrl());
 
 		//login
+		loginPage = new LoginPage(driver);
+		driver.get("http://localhost:" + this.port + "/login");
+		loginPage.getUsername().sendKeys(username);
+		loginPage.getPassword().sendKeys(password);
+		loginPage.getLoginSubmit().submit();
+//		Assertions.assertEquals("http://localhost:" + port + "/", driver.getCurrentUrl());
 
 		// go to home
+		driver.get("http://localhost:" + this.port);
+		Assertions.assertEquals("http://localhost:" + port + "/", driver.getCurrentUrl());
 
 		// logout
+		homePage.logout();
 
 		// check home again
+		driver.get("http://localhost:" + this.port);
+		Assertions.assertEquals("http://localhost:" + port + "/login", driver.getCurrentUrl());
+
 	}
 
 

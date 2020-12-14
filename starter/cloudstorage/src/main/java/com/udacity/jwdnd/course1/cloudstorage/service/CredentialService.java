@@ -10,4 +10,13 @@ public class CredentialService {
     public List<Credential> getUserCredentials(int userId) {
         return null;
     }
+
+    public void update(Credential credential) {
+    }
+
+    public void create(Credential credential) {
+    }
+
+    public void delete(int credentialId) {
+    }
 }

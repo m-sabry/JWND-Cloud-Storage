@@ -3,10 +3,7 @@ package com.udacity.jwdnd.course1.cloudstorage.controller;
 import com.udacity.jwdnd.course1.cloudstorage.model.Note;
 import com.udacity.jwdnd.course1.cloudstorage.model.User;
 import com.udacity.jwdnd.course1.cloudstorage.service.NoteService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -14,7 +11,11 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 @RequestMapping("notes")
 public class NoteController {
-    private @Autowired NoteService noteService;
+    private final NoteService noteService;
+
+    public NoteController(NoteService noteService) {
+        this.noteService = noteService;
+    }
 
     @GetMapping()
     public String getUserNotes(Authentication authentication, Model model){
@@ -35,16 +36,6 @@ public class NoteController {
         model.addAttribute("notes", noteService.getUserNotes(currentUser.getUserId()));
         return "redirect:/";
     }
-//
-//    @PutMapping("")
-//    public String update(Authentication authentication, Note note,Model model){
-//
-//        noteService.update(note);
-//
-//        User currentUser = (User) authentication.getPrincipal();
-//        model.addAttribute("notes", noteService.getUserNotes(currentUser.getUserId()));
-//        return "redirect:/";
-//    }
 
     @GetMapping("delete-note")
     public String deleteNote(@RequestParam("noteId") int noteId){

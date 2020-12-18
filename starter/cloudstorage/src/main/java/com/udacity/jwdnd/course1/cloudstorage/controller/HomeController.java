@@ -5,6 +5,7 @@ import com.udacity.jwdnd.course1.cloudstorage.model.File;
 import com.udacity.jwdnd.course1.cloudstorage.model.Note;
 import com.udacity.jwdnd.course1.cloudstorage.model.User;
 import com.udacity.jwdnd.course1.cloudstorage.service.CredentialService;
+import com.udacity.jwdnd.course1.cloudstorage.service.EncryptionService;
 import com.udacity.jwdnd.course1.cloudstorage.service.FileService;
 import com.udacity.jwdnd.course1.cloudstorage.service.NoteService;
 import org.springframework.security.core.Authentication;
@@ -18,11 +19,15 @@ public class HomeController {
     private final NoteService noteService;
     private final FileService fileService;
     private final CredentialService credentialService;
+    private final EncryptionService encryptionService;
 
-    public HomeController(NoteService noteService, FileService fileService, CredentialService credentialService) {
+    public HomeController(NoteService noteService, FileService fileService,
+                          CredentialService credentialService,
+                          EncryptionService encryptionService) {
         this.noteService = noteService;
         this.fileService = fileService;
         this.credentialService = credentialService;
+        this.encryptionService = encryptionService;
     }
 
     @GetMapping("/")
@@ -37,6 +42,7 @@ public class HomeController {
         model.addAttribute("files", fileService.getUserFiles(currentUser.getUserId()));
         model.addAttribute("credentials", credentialService.getUserCredentials(currentUser.getUserId()));
 
+        model.addAttribute("encryptionService", encryptionService);
         return "home";
     }
 }

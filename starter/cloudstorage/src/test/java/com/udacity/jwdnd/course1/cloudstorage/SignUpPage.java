@@ -31,7 +31,7 @@ public class SignUpPage {
     }
 
     public void signup(){
-        signUpButton.click();
+        signUpButton.submit();
     }
 
     public WebElement getFirstName() {

@@ -3,7 +3,6 @@ package com.udacity.jwdnd.course1.cloudstorage;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.jupiter.api.*;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
@@ -18,6 +17,11 @@ class CloudStorageApplicationTests {
 	private LoginPage loginPage;
 	private HomePage homePage;
 	private SignUpPage signUpPage;
+	private NoteModal noteModal;
+
+	private static final String LOCALHOST = "http://localhost:";
+	private static final String USERNAME = "username";
+	private static final String PASSWORD = "password";
 
 	@BeforeAll
 	static void beforeAll() {
@@ -38,17 +42,17 @@ class CloudStorageApplicationTests {
 
 
 	/*
-		Authorization Test
+		Authorization Tests
 	 */
 
 	@Test
-	public void authorization() {
+	public void successfulLogin() {
 		loginPage = new LoginPage(driver);
 
 		driver.get("http://localhost:" + this.port + "/login");
 
-		loginPage.getUsername().sendKeys("msabry");
-		loginPage.getPassword().sendKeys("111111");
+		loginPage.getUsername().sendKeys(USERNAME);
+		loginPage.getPassword().sendKeys(PASSWORD);
 		loginPage.getLoginSubmit().submit();
 
 		Assertions.assertEquals("http://localhost:" + port + "/", driver.getCurrentUrl());
@@ -57,12 +61,24 @@ class CloudStorageApplicationTests {
 	@Test
 	public void unAuthorizedUser() throws InterruptedException{
 		// _TODO Write a test that verifies that an unauthorized user can only access the login and signup pages.
-
+		String currentURL = null;
+		// first scenario, unauthorized user visit home page and redirected to the login page
 		driver.get("http://localhost:" + this.port);
-		Assertions.assertEquals("http://localhost:" + port + "/login", driver.getCurrentUrl());
+		currentURL = driver.getCurrentUrl();
+		Assertions.assertEquals("http://localhost:" + port + "/login", currentURL);
+
+		// second scenario, unauthorized user try to visit the signup page and successfully reach it
+		driver.get("http://localhost:" + this.port + "/signup");
+		currentURL = driver.getCurrentUrl();
+		Assertions.assertEquals("http://localhost:" + port + "/signup", currentURL);
+
+		// third scenario, unauthorized user try to visit the login page and successfully reach it
+		driver.get("http://localhost:" + this.port + "/login");
+		currentURL = driver.getCurrentUrl();
+		Assertions.assertEquals("http://localhost:" + port + "/login", currentURL);
 	}
 
-	// TODO Write a test that signs up a new user, logs in, verifies that the home page is accessible,
+	// _TODO Write a test that signs up a new user, logs in, verifies that the home page is accessible,
 	//  logs out, and verifies that the home page is no longer accessible.
 	@Test
 	public void fullCycleTest(){
@@ -81,7 +97,7 @@ class CloudStorageApplicationTests {
 
 		//login
 		loginPage = new LoginPage(driver);
-		driver.get("http://localhost:" + this.port + "/login");
+		driver.get(LOCALHOST + this.port + "/login");
 		loginPage.getUsername().sendKeys(username);
 		loginPage.getPassword().sendKeys(password);
 		loginPage.getLoginSubmit().submit();
@@ -89,14 +105,14 @@ class CloudStorageApplicationTests {
 
 		// go to home
 		driver.get("http://localhost:" + this.port);
-		Assertions.assertEquals("http://localhost:" + port + "/", driver.getCurrentUrl());
+		Assertions.assertEquals(LOCALHOST + port + "/", driver.getCurrentUrl());
 
 		// logout
 		homePage.logout();
 
 		// check home again
 		driver.get("http://localhost:" + this.port);
-		Assertions.assertEquals("http://localhost:" + port + "/login", driver.getCurrentUrl());
+		Assertions.assertEquals(LOCALHOST + port + "/login", driver.getCurrentUrl());
 
 	}
 
@@ -104,16 +120,59 @@ class CloudStorageApplicationTests {
 	/*
 		Home Page - Note Testing
 	 */
+	private void login() {
+		loginPage = new LoginPage(driver);
+		driver.get("http://localhost:" + this.port + "/login");
+		loginPage.getUsername().sendKeys("msabry");
+		loginPage.getPassword().sendKeys("111111");
+		loginPage.getLoginSubmit().submit();
+	}
 
 	// TODO Write a test that creates a note, and verifies it is displayed.
+	@Test
 	public void createNote(){
+		// login
+		login();
 
+		// Loading home page
+		driver.get(LOCALHOST + this.port);
+
+		// NoteModal initiation
+		noteModal = new NoteModal(driver);
+		// navigate to notes tab
+		noteModal.openNoteTab();
+
+		int sizeBeforeSaving = noteModal.notesSize(driver);
+		noteModal.createNote("New note title", "New note description");
+		int sizeAfterSaving = noteModal.notesSize(driver);
+
+		Assertions.assertEquals(1, sizeAfterSaving - sizeBeforeSaving);
 	}
 	// TODO Write a test that edits an existing note and verifies that the changes are displayed.
-
+	@Test
 	public void editNote(){
+		// login
+		login();
 
+		// Loading home page
+		driver.get(LOCALHOST + this.port);
+
+		// NoteModal initiation
+		noteModal = new NoteModal(driver);
+
+		// navigate to notes tab
+		noteModal.openNoteTab();
+
+		String expectedTitle = "Edited title";
+		String expectedDescription = "Edited description";
+
+		noteModal.editNote(expectedTitle, expectedDescription);
+		String actualTitle = "";
+		String actualDescription = "";
+		Assertions.assertEquals(expectedTitle, actualTitle);
+		Assertions.assertEquals(expectedDescription, actualDescription);
 	}
+
 	// TODO Write a test that deletes a note and verifies that the note is no longer displayed.
 	public void deleteNote(){
 

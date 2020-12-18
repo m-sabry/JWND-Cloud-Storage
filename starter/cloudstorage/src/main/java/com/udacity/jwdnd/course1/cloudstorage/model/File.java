@@ -1,14 +1,16 @@
 package com.udacity.jwdnd.course1.cloudstorage.model;
 
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
+
 import java.sql.Blob;
 
 public class File {
-    private int fileId;
+    private Integer fileId;
     private String fileName;
     private String contentType;
     private String fileSize;
     private int userId;
-    private Blob fileData;
+    private byte[] fileData;
 
     public int getFileId() {
         return fileId;
@@ -50,11 +52,11 @@ public class File {
         this.userId = userId;
     }
 
-    public Blob getFileData() {
+    public byte[] getFileData() {
         return fileData;
     }
 
-    public void setFileData(Blob fileData) {
+    public void setFileData(byte[] fileData) {
         this.fileData = fileData;
     }
 }

@@ -4,6 +4,7 @@ import com.udacity.jwdnd.course1.cloudstorage.mapper.CredentialMapper;
 import com.udacity.jwdnd.course1.cloudstorage.model.Credential;
 import org.springframework.stereotype.Service;
 
+import javax.xml.validation.SchemaFactoryConfigurationError;
 import java.security.SecureRandom;
 import java.util.Base64;
 import java.util.List;
@@ -24,18 +25,18 @@ public class CredentialService {
     }
 
     public void update(Credential credential) {
+        String encodedKey = encryptionService.generateKey();
+        String encryptedPassword = encryptionService.encryptValue(credential.getPassword(), encodedKey);
+        credential.setPassword(encryptedPassword);
+        credential.setKey(encodedKey);
         credentialMapper.update(credential);
     }
 
     public void create(Credential credential) {
-        SecureRandom random = new SecureRandom();
-        byte[] key = new byte[16];
-        random.nextBytes(key);
-        String encodedKey = Base64.getEncoder().encodeToString(key);
+        String encodedKey = encryptionService.generateKey();
         String encryptedPassword = encryptionService.encryptValue(credential.getPassword(), encodedKey);
         credential.setPassword(encryptedPassword);
         credential.setKey(encodedKey);
-
         credentialMapper.create(credential);
     }
 

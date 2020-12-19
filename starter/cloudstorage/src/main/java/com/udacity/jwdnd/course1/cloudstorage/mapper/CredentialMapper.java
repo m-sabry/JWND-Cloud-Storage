@@ -20,8 +20,8 @@ public interface CredentialMapper {
     int create(Credential credential);
 
     @Update("UPDATE CREDENTIALS SET url = #{url}, " +
-            "username = #{username} " + "password = #{password} " +
-            "key = #{key} " +
+            "username = #{username}, " + "password = #{password}," +
+            "key = #{key}" +
             "WHERE credentialId = #{credentialId} ")
     void update(Credential credential);
 

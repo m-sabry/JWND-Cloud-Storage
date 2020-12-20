@@ -21,7 +21,8 @@ public class HomeController {
     private final CredentialService credentialService;
     private final EncryptionService encryptionService;
 
-    public HomeController(NoteService noteService, FileService fileService,
+    public HomeController(NoteService noteService,
+                          FileService fileService,
                           CredentialService credentialService,
                           EncryptionService encryptionService) {
         this.noteService = noteService;

@@ -34,4 +34,9 @@ public class FileService {
     public List<File> getUserFiles(int userId) {
         return fileMapper.findByUser(userId);
     }
+
+    public boolean isFileNameAvailable(String originalFilename) {
+        List<File> file = fileMapper.getFileByName(originalFilename);
+        return  file.size() == 0;
+    }
 }

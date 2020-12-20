@@ -17,29 +17,24 @@ public class NoteController {
         this.noteService = noteService;
     }
 
-    @GetMapping()
-    public String getUserNotes(Authentication authentication, Model model){
-        User currentUser = (User) authentication.getPrincipal();
-        model.addAttribute("notes", noteService.getUserNotes(currentUser.getUserId()));
-        return "redirect:/";
-    }
-
-
-    @PostMapping("")
-    public String create(Authentication authentication, @ModelAttribute Note note, Model model){
+    @PostMapping()
+    public String createUpdate(Authentication authentication, @ModelAttribute Note note, Model model){
         User currentUser = (User) authentication.getPrincipal();
         note.setUserId(currentUser.getUserId());
+        if(note.getNoteId() != null ){
+            noteService.update(note);
+            model.addAttribute("success","Note updated successfully!");
+        }
+        else {
+            noteService.create(note);
+            model.addAttribute("success","Note created successfully!");
+        }
 
-        if(note.getNoteId() != null ) noteService.update(note);
-        else noteService.create(note);
-
-        model.addAttribute("notes", noteService.getUserNotes(currentUser.getUserId()));
-        return "redirect:/";
+        return "result";
     }
 
     @GetMapping("delete-note")
-    public String deleteNote(@RequestParam("noteId") int noteId){
-
+    public String delete(@RequestParam("noteId") int noteId){
         noteService.delete(noteId);
         return "redirect:/";
     }

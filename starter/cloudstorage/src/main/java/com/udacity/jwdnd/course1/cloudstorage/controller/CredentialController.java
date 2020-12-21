@@ -34,8 +34,10 @@ public class CredentialController {
         User currentUser = (User) authentication.getPrincipal();
         credential.setUserId(currentUser.getUserId());
 
-        if(credential.getCredentialId() != null ) credentialService.update(credential);
-        else credentialService.create(credential);
+        if(credential.getCredentialId() != null )
+            credentialService.update(credential);
+        else
+            credentialService.create(credential);
 
         model.addAttribute("credentials", credentialService.getUserCredentials(currentUser.getUserId()));
         return "redirect:/";

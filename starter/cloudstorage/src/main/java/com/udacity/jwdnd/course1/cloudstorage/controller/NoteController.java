@@ -34,8 +34,9 @@ public class NoteController {
     }
 
     @GetMapping("delete-note")
-    public String delete(@RequestParam("noteId") int noteId){
+    public String delete(@RequestParam("noteId") int noteId, Model model){
         noteService.delete(noteId);
-        return "redirect:/";
+        model.addAttribute("success","Note Deleted successfully!");
+        return "result";
     }
 }

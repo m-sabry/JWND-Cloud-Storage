@@ -20,33 +20,27 @@ public class CredentialController {
         this.encryptionService = encryptionService;
     }
 
-    @GetMapping()
-    public String getUserCredentials(Authentication authentication, Model model){
-        User currentUser = (User) authentication.getPrincipal();
-        model.addAttribute("credentials", credentialService.getUserCredentials(currentUser.getUserId()));
-        model.addAttribute("encryptionService", encryptionService);
-        return "redirect:/";
-    }
-
-
     @PostMapping()
     public String create(Authentication authentication, @ModelAttribute Credential credential, Model model){
         User currentUser = (User) authentication.getPrincipal();
         credential.setUserId(currentUser.getUserId());
 
-        if(credential.getCredentialId() != null )
+        if(credential.getCredentialId() != null ) {
             credentialService.update(credential);
-        else
+            model.addAttribute("success","Credential updated successfully!");
+        }else {
             credentialService.create(credential);
+            model.addAttribute("success","Credential created successfully!");
+        }
 
         model.addAttribute("credentials", credentialService.getUserCredentials(currentUser.getUserId()));
-        return "redirect:/";
+        return "result";
     }
 
     @GetMapping("delete-credential")
-    public String delete(@RequestParam("credentialId") Integer credentialId){
-
+    public String delete(@RequestParam("credentialId") Integer credentialId, Model model){
         credentialService.delete(credentialId);
-        return "redirect:/";
+        model.addAttribute("success","Credential Deleted successfully!");
+        return "result";
     }
 }

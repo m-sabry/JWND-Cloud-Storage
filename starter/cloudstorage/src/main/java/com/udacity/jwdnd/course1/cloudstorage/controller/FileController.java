@@ -28,7 +28,6 @@ public class FileController {
 
     @GetMapping("/view/{fileId}")
     public ResponseEntity<Resource> getFile(@PathVariable Integer fileId, Authentication authentication)  {
-
         File file = fileService.getOne(fileId);
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(file.getContentType()))
@@ -59,7 +58,7 @@ public class FileController {
         if(multipartFile.getSize() < 1000000 * 5 )
             file.setFileSize(multipartFile.getSize());
         else
-            error = "File is biger than 5MB  large! ";
+            error = "File is bigger than 5MB  large! ";
 
         if(error == null) {
             file.setContentType(multipartFile.getContentType());
@@ -79,9 +78,10 @@ public class FileController {
     }
 
     @GetMapping("delete-file")
-    public String deleteFile(@RequestParam("fileId") int fileId){
+    public String deleteFile(@RequestParam("fileId") int fileId, Model model){
         fileService.delete(fileId);
-        return "redirect:/";
+        model.addAttribute("success","File Deleted successfully!");
+        return "result";
     }
 
 }

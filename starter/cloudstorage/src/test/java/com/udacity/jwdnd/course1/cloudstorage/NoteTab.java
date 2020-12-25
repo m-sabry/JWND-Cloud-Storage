@@ -11,7 +11,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.util.List;
 
 
-public class NotePage {
+public class NoteTab {
 
     private final WebDriverWait driverWait;
 
@@ -44,7 +44,7 @@ public class NotePage {
     @FindBy(xpath = "//table[@id='noteTable']//tbody//tr//td//a")
     private WebElement deleteNoteButton;
 
-    public NotePage(WebDriver driver){
+    public NoteTab(WebDriver driver){
         PageFactory.initElements(driver, this);
         driverWait = new WebDriverWait(driver, 500);
     }

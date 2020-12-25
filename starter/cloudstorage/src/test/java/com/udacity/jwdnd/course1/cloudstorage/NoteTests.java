@@ -17,7 +17,7 @@ class NoteTests {
 	private WebDriver driver;
 
 	private HomePage homePage;
-	private NotePage notePage;
+	private NoteTab noteTab;
 
 	private static final String LOCALHOST = "http://localhost:";
 	private static final String USERNAME = "msabry";
@@ -44,10 +44,10 @@ class NoteTests {
 		homePage = new HomePage(driver);
 
 		// NoteModal initiation
-		notePage = new NotePage(driver);
+		noteTab = new NoteTab(driver);
 
 		// navigate to notes tab
-		notePage.openNoteTab();
+		noteTab.openNoteTab();
 
 	}
 
@@ -56,6 +56,8 @@ class NoteTests {
 		if (this.driver != null) {
 			driver.quit();
 		}
+
+//		homePage.logout();
 	}
 
 
@@ -63,14 +65,14 @@ class NoteTests {
 	@Test
 	public void createNote(){
 		// NoteModal initiation
-		notePage = new NotePage(driver);
+		noteTab = new NoteTab(driver);
 		// navigate to notes tab
-		notePage.openNoteTab();
+		noteTab.openNoteTab();
 
-		int sizeBeforeSaving = notePage.notesSize();
-		notePage.createNote("Title: " + new Date().toString(), "Description: " + new Date().toString());
+		int sizeBeforeSaving = noteTab.notesSize();
+		noteTab.createNote("Title: " + new Date().toString(), "Description: " + new Date().toString());
 		driver.get(LOCALHOST + port);
-		int sizeAfterSaving = notePage.notesSize();
+		int sizeAfterSaving = noteTab.notesSize();
 
 		Assertions.assertEquals(1, sizeAfterSaving - sizeBeforeSaving);
 	}
@@ -83,14 +85,14 @@ class NoteTests {
 		String expectedDescription = "Edited description";
 
 		// edit the last note in the note's list
-		int noteCounter = notePage.notesSize();
-		notePage.editNote(noteCounter - 1, expectedTitle, expectedDescription);
+		int noteCounter = noteTab.notesSize();
+		noteTab.editNote(noteCounter - 1, expectedTitle, expectedDescription);
 
 		// loading home page and navigating to notes tab
 		driver.get(LOCALHOST + port);
-		notePage.openNoteTab();
+		noteTab.openNoteTab();
 
-		String[] editedValues = notePage.getEditedValues(noteCounter -1 );
+		String[] editedValues = noteTab.getEditedValues(noteCounter -1 );
 		String actualTitle = editedValues[0];
 		String actualDescription = editedValues[1];
 		Assertions.assertEquals(expectedTitle, actualTitle);
@@ -101,14 +103,14 @@ class NoteTests {
 	public void deleteNote(){
 	// _TODO Write a test that deletes a note and verifies that the note is no longer displayed.
 		// NoteModal initiation
-		notePage = new NotePage(driver);
+		noteTab = new NoteTab(driver);
 
 		// navigate to notes tab
-		notePage.openNoteTab();
+		noteTab.openNoteTab();
 
-		int sizeBeforeSaving = notePage.notesSize();
-		notePage.deleteNote();
-		int sizeAfterSaving = notePage.notesSize();
+		int sizeBeforeSaving = noteTab.notesSize();
+		noteTab.deleteNote();
+		int sizeAfterSaving = noteTab.notesSize();
 
 		Assertions.assertEquals(-1, sizeAfterSaving - sizeBeforeSaving);
 	}

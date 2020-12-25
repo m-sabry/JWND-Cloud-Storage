@@ -1,30 +1,22 @@
 package com.udacity.jwdnd.course1.cloudstorage;
 
-import com.udacity.jwdnd.course1.cloudstorage.service.CredentialService;
-import com.udacity.jwdnd.course1.cloudstorage.service.EncryptionService;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.jupiter.api.*;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class CloudStorageApplicationTests {
+class HomePageTests {
 
 	@LocalServerPort
 	private int port;
 	private WebDriver driver;
 
-	@Autowired
-	private CredentialService credentialService;
-
 	private LoginPage loginPage;
 	private SignUpPage signUpPage;
 	private HomePage homePage;
-	private NotePage notePage;
-	private CredentialPage credentialPage;
 
 	private static final String LOCALHOST = "http://localhost:";
 	private static final String USERNAME = "msabry";
@@ -39,6 +31,7 @@ class CloudStorageApplicationTests {
 	@BeforeEach
 	public void beforeEach() {
 		this.driver = new ChromeDriver();
+		homePage = new HomePage(driver);
 	}
 
 	@AfterEach

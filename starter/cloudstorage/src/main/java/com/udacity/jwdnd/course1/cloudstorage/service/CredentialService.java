@@ -4,9 +4,6 @@ import com.udacity.jwdnd.course1.cloudstorage.mapper.CredentialMapper;
 import com.udacity.jwdnd.course1.cloudstorage.model.Credential;
 import org.springframework.stereotype.Service;
 
-import javax.xml.validation.SchemaFactoryConfigurationError;
-import java.security.SecureRandom;
-import java.util.Base64;
 import java.util.List;
 
 @Service
@@ -42,5 +39,9 @@ public class CredentialService {
 
     public void delete(int credentialId) {
         credentialMapper.deleteCredential(credentialId);
+    }
+
+    public Credential getOne(int credentialId) {
+        return credentialMapper.find(credentialId);
     }
 }

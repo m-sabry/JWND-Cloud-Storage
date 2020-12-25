@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.List;
 
 
-public class CredentialPage {
+public class CredentialTab {
 
     private final WebDriverWait driverWait;
 
@@ -22,12 +22,12 @@ public class CredentialPage {
     private WebElement credentialsTab;
 
     // Credential tab controls
-    @FindBy(id = "credentialTable")
-    private WebElement credentialTable;
+    @FindBy(xpath = "//table[@id='credentialTable']//tbody//tr")
+    private List<WebElement> credentialTable;
     @FindBy(xpath = "//div[@id='nav-credentials']//button")
     private WebElement newCredentialButton;
     @FindBy(xpath = "//table[@id='credentialTable']//tbody//tr//td//button")
-    private WebElement editButton;
+    private List<WebElement> editButtons;
     @FindBy(xpath = "//table[@id='credentialTable']//tbody//tr//td//a")
     private WebElement deleteButton;
     @FindBy(xpath = "//table[@id='credentialTable']//tbody//tr")
@@ -47,7 +47,7 @@ public class CredentialPage {
     private WebElement saveButton;
 
 
-    public CredentialPage(WebDriver driver){
+    public CredentialTab(WebDriver driver){
         PageFactory.initElements(driver, this);
         driverWait = new WebDriverWait(driver, 500);
     }
@@ -69,8 +69,9 @@ public class CredentialPage {
         driverWait.until(ExpectedConditions.elementToBeClickable(saveButton)).click();
     }
 
-    public void editCredential(String url, String username, String password) {
-        driverWait.until(ExpectedConditions.elementToBeClickable(editButton)).click();
+    public void editCredential(int rowIndex, String url, String username, String password) {
+        driverWait.until(ExpectedConditions.elementToBeClickable(
+                editButtons.get(rowIndex))).click();
 
         driverWait.until(ExpectedConditions.elementToBeClickable(urlInput)).click();
         urlInput.clear();
@@ -90,11 +91,24 @@ public class CredentialPage {
     }
 
     public int credentialsListSize() {
-        List<WebElement> elements = credentialTable.findElements(By.tagName("tr"));
-        return elements.size();
+        return credentialTable.size();
     }
 
     public String [] getLastAddedCredential() {
+        WebElement row = credentialRows.get(credentialRows.size() - 1);
+        List<WebElement> tds = row.findElements(By.xpath("td//span"));
+
+        String [] details = new String[4];
+        details[0] = tds.get(0).getAttribute("innerHTML"); // URL
+        details[1] = tds.get(1).getAttribute("innerHTML"); // username
+        details[2] = tds.get(2).getAttribute("innerHTML"); // password
+        details[3] = row.findElement(By.xpath("//table[@id='credentialTable']//tbody//tr//td//a"))
+                .getAttribute("href").split("=")[1]; // credential Id
+
+        return details;
+    }
+
+    public String [] getLastAddedCredentials() {
         WebElement row = credentialRows.get(credentialRows.size() - 1);
         List<WebElement> tds = row.findElements(By.xpath("td//span"));
 

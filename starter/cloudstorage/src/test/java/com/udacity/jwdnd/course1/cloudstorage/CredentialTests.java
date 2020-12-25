@@ -20,7 +20,7 @@ class CredentialTests {
 	private CredentialService credentialService;
 
 	private HomePage homePage;
-	private CredentialPage credentialPage;
+	private CredentialTab credentialTab;
 
 	private static final String LOCALHOST = "http://localhost:";
 	private static final String USERNAME = "msabry";
@@ -55,9 +55,7 @@ class CredentialTests {
 			driver.quit();
 		}
 
-		// logout
-		if(homePage != null) homePage.logout();
-		else System.out.println("HOME PAGE IS NULL");
+//		homePage.logout();
 	}
 
 	// _TODO Write a test that creates a set of credentials,
@@ -68,29 +66,27 @@ class CredentialTests {
 		// _TODO create a new credential
 
 		// CredentialModal initiation
-		credentialPage = new CredentialPage(driver);
+		credentialTab = new CredentialTab(driver);
 
 		// navigate to notes tab and create a new credential
-		credentialPage.openCredentialTab();
+		credentialTab.openCredentialTab();
 		String expectedUrl = "uuuuuuuuuu";
 		String expectedUsername = "sssssssssss";
 		String expectedBlankPassword = "ppppppppppp";
-		credentialPage.createCredential(expectedUrl, expectedUsername, expectedBlankPassword);
+		credentialTab.createCredential(expectedUrl, expectedUsername, expectedBlankPassword);
 
 		driver.get(LOCALHOST + port);
 
 		// TODO verify display
-		credentialPage.openCredentialTab();
-		String [] actualCredentialArray = credentialPage.getLastAddedCredential();
+		credentialTab.openCredentialTab();
+		String [] actualCredentialArray = credentialTab.getLastAddedCredential();
 
 		Integer credentialId = Integer.valueOf(actualCredentialArray[3]);
 		String actualCredential = actualCredentialArray[0]+actualCredentialArray[1]+actualCredentialArray[2];
-		String expectedCredential = credentialPage.getExpectedCredential(credentialId, credentialService);
+		String expectedCredential = credentialTab.getExpectedCredential(credentialId, credentialService);
 		Assertions.assertEquals(expectedCredential, actualCredential);
 
 		// TODO verify the displayed password is encrypted
-//		credentialPage.openCredentialTab();
-//		Assertions.assertEquals(expectedEncryptedPassword, actualEncryptedPassword);
 
 	}
 
@@ -101,19 +97,29 @@ class CredentialTests {
 	@Test
 	public void editCredential(){
 		// NoteModal initiation
-		credentialPage = new CredentialPage(driver);
+		credentialTab = new CredentialTab(driver);
 
 		// navigate to notes tab
-		credentialPage.openCredentialTab();
+		credentialTab.openCredentialTab();
 
 		String expectedUrl = "uuuuuuuuuu";
 		String expectedUsername = "sssssssssss";
 		String expectedBlankPassword = "ppppppppppp";
 
-		credentialPage.editCredential(expectedUrl, expectedUsername, expectedBlankPassword);
-		String actualUrl = "";
-		String actualUsername = "";
-		String actualBlankPassword = "";
+		// edit the last note in the note's list
+		int credentialsCounter = credentialTab.credentialsListSize();
+		credentialTab.editCredential( credentialsCounter - 1,
+				expectedUrl, expectedUsername, expectedBlankPassword);
+
+
+		// loading home page and navigating to notes tab
+		driver.get(LOCALHOST + port);
+		credentialTab.openCredentialTab();
+
+		String[] editedValues = credentialTab.getLastAddedCredentials();
+		String actualUrl = editedValues[0];
+		String actualUsername = editedValues[1];
+		String actualBlankPassword = editedValues[2];
 
 		Assertions.assertEquals(expectedUrl, actualUrl);
 		Assertions.assertEquals(expectedUsername, actualUsername);
@@ -127,14 +133,14 @@ class CredentialTests {
 	public void deleteCredential(){
 
 		// Credential Page initiation
-		credentialPage = new CredentialPage(driver);
+		credentialTab = new CredentialTab(driver);
 
 		// navigate to notes tab
-		credentialPage.openCredentialTab();
+		credentialTab.openCredentialTab();
 
-		int sizeBeforeSaving = credentialPage.credentialsListSize();
-		credentialPage.deleteCredential();
-		int sizeAfterSaving = credentialPage.credentialsListSize();
+		int sizeBeforeSaving = credentialTab.credentialsListSize();
+		credentialTab.deleteCredential();
+		int sizeAfterSaving = credentialTab.credentialsListSize();
 
 		Assertions.assertEquals(-1, sizeAfterSaving - sizeBeforeSaving);
 

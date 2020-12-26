@@ -10,6 +10,7 @@ import org.springframework.boot.web.server.LocalServerPort;
 import java.util.Date;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class NoteTests {
 
 	@LocalServerPort
@@ -63,6 +64,7 @@ class NoteTests {
 
 	// _TODO Write a test that creates a note, and verifies it is displayed.
 	@Test
+	@Order(1)
 	public void createNote(){
 		// NoteModal initiation
 		noteTab = new NoteTab(driver);
@@ -77,8 +79,8 @@ class NoteTests {
 		Assertions.assertEquals(1, sizeAfterSaving - sizeBeforeSaving);
 	}
 
-
 	@Test
+	@Order(2)
 	public void editNote(){
 		// _TODO Write a test that edits an existing note and verifies that the changes are displayed.
 		String expectedTitle = "Edited title";
@@ -100,6 +102,7 @@ class NoteTests {
 	}
 
 	@Test
+	@Order(3)
 	public void deleteNote(){
 	// _TODO Write a test that deletes a note and verifies that the note is no longer displayed.
 		// NoteModal initiation

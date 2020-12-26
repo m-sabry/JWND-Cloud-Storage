@@ -10,6 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class CredentialTests {
 
 	@LocalServerPort
@@ -29,7 +30,6 @@ class CredentialTests {
 	@BeforeAll
 	static void beforeAll() {
 		WebDriverManager.chromedriver().setup();
-
 	}
 
 	@BeforeEach
@@ -62,6 +62,7 @@ class CredentialTests {
 	//  verifies that they are displayed, and
 	//  verifies that the displayed password is encrypted.
 	@Test
+	@Order(1)
 	public void createCredential(){
 		// _TODO create a new credential
 
@@ -95,6 +96,7 @@ class CredentialTests {
 	//  edits the credentials, and
 	//  verifies that the changes are displayed.
 	@Test
+	@Order(2)
 	public void editCredential(){
 		// NoteModal initiation
 		credentialTab = new CredentialTab(driver);
@@ -116,7 +118,7 @@ class CredentialTests {
 		driver.get(LOCALHOST + port);
 		credentialTab.openCredentialTab();
 
-		String[] editedValues = credentialTab.getLastAddedCredentials();
+		String[] editedValues = credentialTab.getLastAddedCredentials(credentialService);
 		String actualUrl = editedValues[0];
 		String actualUsername = editedValues[1];
 		String actualBlankPassword = editedValues[2];
@@ -130,6 +132,7 @@ class CredentialTests {
 	// TODO Write a test that deletes an existing set of credentials
 	//  and verifies that the credentials are no longer displayed.
 	@Test
+	@Order(3)
 	public void deleteCredential(){
 
 		// Credential Page initiation

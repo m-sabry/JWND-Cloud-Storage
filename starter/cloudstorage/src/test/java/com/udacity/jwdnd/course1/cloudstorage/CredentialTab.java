@@ -2,6 +2,7 @@ package com.udacity.jwdnd.course1.cloudstorage;
 
 import com.udacity.jwdnd.course1.cloudstorage.model.Credential;
 import com.udacity.jwdnd.course1.cloudstorage.service.CredentialService;
+import com.udacity.jwdnd.course1.cloudstorage.service.EncryptionService;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -108,16 +109,20 @@ public class CredentialTab {
         return details;
     }
 
-    public String [] getLastAddedCredentials() {
+    public String [] getLastAddedCredentials(CredentialService credentialService) {
         WebElement row = credentialRows.get(credentialRows.size() - 1);
         List<WebElement> tds = row.findElements(By.xpath("td//span"));
 
         String [] details = new String[4];
         details[0] = tds.get(0).getAttribute("innerHTML"); // URL
         details[1] = tds.get(1).getAttribute("innerHTML"); // username
-        details[2] = tds.get(2).getAttribute("innerHTML"); // password
         details[3] = row.findElement(By.xpath("//table[@id='credentialTable']//tbody//tr//td//a"))
                 .getAttribute("href").split("=")[1]; // credential Id
+
+        String encryptedPassword = tds.get(2).getAttribute("innerHTML"); // password
+        Credential credential = credentialService.getOne(Integer.valueOf(details[3]));
+        EncryptionService encryptionService = new EncryptionService();
+        details[2] = encryptionService.decryptValue(encryptedPassword, credential.getKey());
 
         return details;
     }

@@ -23,9 +23,10 @@ class CredentialTests {
 	private HomePage homePage;
 	private CredentialTab credentialTab;
 
-	private static final String LOCALHOST = "http://localhost:";
-	private static final String USERNAME = "msabry";
-	private static final String PASSWORD = "111111";
+	private static final String BASE_URL = "http://localhost:";
+	private static final String LOGIN = "/login";
+	private static final String USERNAME = "username";
+	private static final String PASSWORD = "password";
 
 	@BeforeAll
 	static void beforeAll() {
@@ -36,15 +37,15 @@ class CredentialTests {
 	public void beforeEach() {
 		this.driver = new ChromeDriver();
 
-		// login
+		// logs in an existing user
 		LoginPage loginPage = new LoginPage(driver);
-		driver.get("http://localhost:" + this.port + "/login");
+		driver.get(BASE_URL + this.port + LOGIN);
 		loginPage.getUsername().sendKeys(USERNAME);
 		loginPage.getPassword().sendKeys(PASSWORD);
 		loginPage.getLoginSubmit().submit();
 
 		// Loading home page
-		driver.get(LOCALHOST + this.port);
+		driver.get(BASE_URL + this.port);
 		homePage = new HomePage(driver);
 	}
 
@@ -55,46 +56,36 @@ class CredentialTests {
 			driver.quit();
 		}
 
-//		homePage.logout();
 	}
 
-	// _TODO Write a test that creates a set of credentials,
-	//  verifies that they are displayed, and
-	//  verifies that the displayed password is encrypted.
 	@Test
 	@Order(1)
 	public void createCredential(){
-		// _TODO create a new credential
-
-		// CredentialModal initiation
 		credentialTab = new CredentialTab(driver);
 
+		// _TODO create a credential
 		// navigate to notes tab and create a new credential
 		credentialTab.openCredentialTab();
-		String expectedUrl = "uuuuuuuuuu";
-		String expectedUsername = "sssssssssss";
-		String expectedBlankPassword = "ppppppppppp";
+		String expectedUrl = "url";
+		String expectedUsername = "username";
+		String expectedBlankPassword = "password";
 		credentialTab.createCredential(expectedUrl, expectedUsername, expectedBlankPassword);
 
-		driver.get(LOCALHOST + port);
+		// Navigating to home page
+		driver.get(BASE_URL + port);
 
-		// TODO verify display
+		// _TODO verify display
 		credentialTab.openCredentialTab();
 		String [] actualCredentialArray = credentialTab.getLastAddedCredential();
 
 		Integer credentialId = Integer.valueOf(actualCredentialArray[3]);
 		String actualCredential = actualCredentialArray[0]+actualCredentialArray[1]+actualCredentialArray[2];
+		// expected credential loaded from database
 		String expectedCredential = credentialTab.getExpectedCredential(credentialId, credentialService);
+
 		Assertions.assertEquals(expectedCredential, actualCredential);
-
-		// TODO verify the displayed password is encrypted
-
 	}
 
-	// TODO Write a test that views an existing set of credentials,
-	//  verifies that the viewable password is unencrypted,
-	//  edits the credentials, and
-	//  verifies that the changes are displayed.
 	@Test
 	@Order(2)
 	public void editCredential(){
@@ -104,9 +95,9 @@ class CredentialTests {
 		// navigate to notes tab
 		credentialTab.openCredentialTab();
 
-		String expectedUrl = "uuuuuuuuuu";
-		String expectedUsername = "sssssssssss";
-		String expectedBlankPassword = "ppppppppppp";
+		String expectedUrl = "url";
+		String expectedUsername = "username";
+		String expectedBlankPassword = "password";
 
 		// edit the last note in the note's list
 		int credentialsCounter = credentialTab.credentialsListSize();
@@ -115,7 +106,7 @@ class CredentialTests {
 
 
 		// loading home page and navigating to notes tab
-		driver.get(LOCALHOST + port);
+		driver.get(BASE_URL + port);
 		credentialTab.openCredentialTab();
 
 		String[] editedValues = credentialTab.getLastAddedCredentials(credentialService);
@@ -123,14 +114,13 @@ class CredentialTests {
 		String actualUsername = editedValues[1];
 		String actualBlankPassword = editedValues[2];
 
+		// _TODO verifies that the changes appear in the credential list and password unencrypted
 		Assertions.assertEquals(expectedUrl, actualUrl);
 		Assertions.assertEquals(expectedUsername, actualUsername);
 		Assertions.assertEquals(expectedBlankPassword, actualBlankPassword);
 
 	}
 
-	// TODO Write a test that deletes an existing set of credentials
-	//  and verifies that the credentials are no longer displayed.
 	@Test
 	@Order(3)
 	public void deleteCredential(){
@@ -141,10 +131,12 @@ class CredentialTests {
 		// navigate to notes tab
 		credentialTab.openCredentialTab();
 
+		// _TODO delete credential
 		int sizeBeforeSaving = credentialTab.credentialsListSize();
 		credentialTab.deleteCredential();
 		int sizeAfterSaving = credentialTab.credentialsListSize();
 
+		// _TODO verifies that the changes appear in the credential list
 		Assertions.assertEquals(-1, sizeAfterSaving - sizeBeforeSaving);
 
 	}

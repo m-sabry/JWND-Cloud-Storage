@@ -20,7 +20,8 @@ class NoteTests {
 	private HomePage homePage;
 	private NoteTab noteTab;
 
-	private static final String LOCALHOST = "http://localhost:";
+	private static final String BASE_URL = "http://localhost:";
+	private static final String LOGIN = "/login";
 	private static final String USERNAME = "msabry";
 	private static final String PASSWORD = "111111";
 
@@ -35,13 +36,13 @@ class NoteTests {
 
 		// login
 		LoginPage loginPage = new LoginPage(driver);
-		driver.get(LOCALHOST + port + "/login");
+		driver.get(BASE_URL + port + LOGIN);
 		loginPage.getUsername().sendKeys(USERNAME);
 		loginPage.getPassword().sendKeys(PASSWORD);
 		loginPage.getLoginSubmit().submit();
 
 		// Loading home page
-		driver.get(LOCALHOST + this.port);
+		driver.get(BASE_URL + this.port);
 		homePage = new HomePage(driver);
 
 		// NoteModal initiation
@@ -57,12 +58,8 @@ class NoteTests {
 		if (this.driver != null) {
 			driver.quit();
 		}
-
-//		homePage.logout();
 	}
 
-
-	// _TODO Write a test that creates a note, and verifies it is displayed.
 	@Test
 	@Order(1)
 	public void createNote(){
@@ -73,7 +70,7 @@ class NoteTests {
 
 		int sizeBeforeSaving = noteTab.notesSize();
 		noteTab.createNote("Title: " + new Date().toString(), "Description: " + new Date().toString());
-		driver.get(LOCALHOST + port);
+		driver.get(BASE_URL + port);
 		int sizeAfterSaving = noteTab.notesSize();
 
 		Assertions.assertEquals(1, sizeAfterSaving - sizeBeforeSaving);
@@ -91,7 +88,7 @@ class NoteTests {
 		noteTab.editNote(noteCounter - 1, expectedTitle, expectedDescription);
 
 		// loading home page and navigating to notes tab
-		driver.get(LOCALHOST + port);
+		driver.get(BASE_URL + port);
 		noteTab.openNoteTab();
 
 		String[] editedValues = noteTab.getEditedValues(noteCounter -1 );
@@ -104,7 +101,7 @@ class NoteTests {
 	@Test
 	@Order(3)
 	public void deleteNote(){
-	// _TODO Write a test that deletes a note and verifies that the note is no longer displayed.
+		// _TODO Write a test that deletes a note and verifies that the note is no longer displayed.
 		// NoteModal initiation
 		noteTab = new NoteTab(driver);
 

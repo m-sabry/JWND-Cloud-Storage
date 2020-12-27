@@ -65,7 +65,7 @@ public class CredentialTab {
         driverWait.until(ExpectedConditions.elementToBeClickable(usernameInput)).click();
         usernameInput.sendKeys(username);
         driverWait.until(ExpectedConditions.elementToBeClickable(passwordInput)).click();
-        passwordInput.sendKeys(username);
+        passwordInput.sendKeys(password);
 
         driverWait.until(ExpectedConditions.elementToBeClickable(saveButton)).click();
     }

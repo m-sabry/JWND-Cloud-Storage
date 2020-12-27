@@ -18,12 +18,15 @@ class NoteTests {
 	private WebDriver driver;
 
 	private HomePage homePage;
+	private LoginPage loginPage;
+	private SignUpPage signUpPage;
 	private NoteTab noteTab;
 
 	private static final String BASE_URL = "http://localhost:";
 	private static final String LOGIN = "/login";
-	private static final String USERNAME = "msabry";
-	private static final String PASSWORD = "111111";
+	private static final String SIGNUP = "/signup";
+	private static final String USERNAME = "username";
+	private static final String PASSWORD = "password";
 
 	@BeforeAll
 	static void beforeAll() {
@@ -32,14 +35,11 @@ class NoteTests {
 
 	@BeforeEach
 	public void beforeEach() {
-		this.driver = new ChromeDriver();
+		driver = new ChromeDriver();
 
+		signup(driver);
 		// login
-		LoginPage loginPage = new LoginPage(driver);
-		driver.get(BASE_URL + port + LOGIN);
-		loginPage.getUsername().sendKeys(USERNAME);
-		loginPage.getPassword().sendKeys(PASSWORD);
-		loginPage.getLoginSubmit().submit();
+		login(driver);
 
 		// Loading home page
 		driver.get(BASE_URL + this.port);
@@ -113,6 +113,25 @@ class NoteTests {
 		int sizeAfterSaving = noteTab.notesSize();
 
 		Assertions.assertEquals(-1, sizeAfterSaving - sizeBeforeSaving);
+	}
+
+
+	private void signup(WebDriver driver) {
+		//Signup
+		driver.get(BASE_URL + port + SIGNUP);
+		signUpPage = new SignUpPage(driver);
+		signUpPage.getUsername().sendKeys(USERNAME);
+		signUpPage.getPassword().sendKeys(PASSWORD);
+		signUpPage.signup();
+	}
+
+	private void login(WebDriver driver) {
+		//login
+		loginPage = new LoginPage(driver);
+		driver.get(BASE_URL + port + LOGIN);
+		loginPage.getUsername().sendKeys(USERNAME);
+		loginPage.getPassword().sendKeys(PASSWORD);
+		loginPage.getLoginSubmit().submit();
 	}
 
 }

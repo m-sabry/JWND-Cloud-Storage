@@ -44,6 +44,7 @@ public class SignupController {
             return "signup";
         }
 
+        model.addAttribute("signupSuccess",true);
         return "login";
     }
 }
